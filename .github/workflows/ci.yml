@@ -1,0 +1,61 @@
+name: Angular — CI/CD
+on:
+  push: {branches: [main]}
+  pull_request: {}
+  workflow_dispatch: {}
+permissions:
+  contents: read
+concurrency:
+  group: frontend-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - run: npm ci
+      - run: npm audit --omit=dev --audit-level=high
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - name: Run browser integration tests against Java API
+        env:
+          SEED_DEMO: 'true'
+          ADMIN_EMAIL: admin@grainettable.local
+          ADMIN_PASSWORD: Local-test-only-password-2026
+        run: |
+          set -euo pipefail
+          git clone --depth 1 https://github.com/abdoulayecheikhouly/grainettable-backend.git ../api
+          (cd ../api && mvn -B spring-boot:run > ../api-test.log 2>&1) &
+          npm start > ../angular-test.log 2>&1 &
+          for i in $(seq 1 90); do
+            if curl -fsS http://localhost:4200/api/health; then break; fi
+            sleep 2
+          done
+          npx playwright test
+  deploy:
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.DEPLOY_ENABLED == 'true'
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy tested commit through the restricted SSH command
+        env:
+          SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+          TARGET_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          umask 077
+          mkdir -p ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          trap 'rm -f ~/.ssh/deploy_key' EXIT
+          ssh -o BatchMode=yes -o StrictHostKeyChecking=yes -i ~/.ssh/deploy_key deploy-grainettable@187.126.0.25 "$TARGET_SHA"

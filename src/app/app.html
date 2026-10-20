@@ -1,0 +1,6 @@
+<a class="skip" href="#content">Aller au contenu</a>
+@if (!router.url.startsWith('/admin')) {
+<header><a class="logo" routerLink="/"><img src="/assets/emblem.svg" width="54" height="54" alt=""/><span>GRAIN & TABLE<small>LA QUALITÉ DE LA TABLE</small></span></a><nav aria-label="Navigation principale"><a routerLink="/produits">Tous les produits</a><a routerLink="/boutique">La boutique</a><a [routerLink]="store.user()?'/compte':'/connexion'">{{store.user()?'Mon compte':'Connexion'}}</a>@if(store.user()?.role==='admin'){<a routerLink="/admin">Administration</a>}@if(store.user()){<button class="text-button" (click)="logout()">Déconnexion</button>}<a class="button dark small" routerLink="/panier">Panier ({{store.count()}})</a></nav></header>
+}
+<main id="content">@if(store.error()){<div class="error container" role="alert">{{store.error()}}</div>}<router-outlet/></main>
+@if (!router.url.startsWith('/admin')) {<footer><a class="logo" routerLink="/"><img src="/assets/emblem.svg" width="54" height="54" alt=""/><span>GRAIN & TABLE<small>LA QUALITÉ DE LA TABLE</small></span></a><p>Galerie du Rond-point de Saly · Saly Portugal, Sénégal</p><div class="row"><a routerLink="/boutique">Nous trouver ↗</a><a href="tel:+221772506666">77 250 66 66</a><a routerLink="/admin">Espace équipe</a></div></footer>}
