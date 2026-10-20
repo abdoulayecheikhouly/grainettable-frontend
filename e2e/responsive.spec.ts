@@ -12,7 +12,7 @@ test('storefront and admin adapt to phone, tablet and desktop widths', async ({ 
         .poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth))
         .toBeTruthy();
     }
-    if (width < 1200) {
+    if (width < 768) {
       await page.getByRole('button', { name: 'Ouvrir le menu', exact: true }).click();
       await expect(page.getByRole('menuitem', { name: 'Tous les produits' })).toBeVisible();
       await page.keyboard.press('Escape');
@@ -60,7 +60,7 @@ test('PWA manifest and offline notice are available', async ({ page, context }) 
     expect(response.headers()['content-type']).toContain('image/png');
   }
   await context.setOffline(true);
-  await expect(page.getByRole('status')).toContainText('hors connexion');
+  await expect(page.getByRole('status').filter({ hasText: 'hors connexion' })).toBeVisible();
   await context.setOffline(false);
   await expect(page.getByText('Vous êtes hors connexion.', { exact: false })).toHaveCount(0);
 });

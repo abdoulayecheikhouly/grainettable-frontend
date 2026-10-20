@@ -7,6 +7,9 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
 import { Store, money, message } from '../../store';
 import type { Category, Page, Product, Order } from '../../models';
+import { AdminDashboard } from '../../components/admin-dashboard/admin-dashboard';
+import { AdminSettings } from '../../components/admin-settings/admin-settings';
+import { AdminStock } from '../../components/admin-stock/admin-stock';
 import { Pagination } from '../../pagination';
 const blankProduct = () => ({
   id: 0,
@@ -22,7 +25,16 @@ const blankProduct = () => ({
 const blankCategory = () => ({ id: 0, name: '', slug: '', description: '', visible: true });
 @Component({
   selector: 'app-admin',
-  imports: [FormsModule, RouterLink, Pagination, MatSidenavModule, MatButtonModule],
+  imports: [
+    FormsModule,
+    RouterLink,
+    Pagination,
+    MatSidenavModule,
+    MatButtonModule,
+    AdminDashboard,
+    AdminSettings,
+    AdminStock,
+  ],
   templateUrl: './admin.html',
 })
 export class Admin implements OnInit {
@@ -30,7 +42,7 @@ export class Admin implements OnInit {
   menuOpen = signal(false);
   store = inject(Store);
   router = inject(Router);
-  view = signal('products');
+  view = signal('dashboard');
   data = signal<Page<Product> | null>(null);
   categories = signal<Category[]>([]);
   orders = signal<Page<Order> | null>(null);
@@ -134,6 +146,7 @@ export class Admin implements OnInit {
       this.notice.set('Catégorie enregistrée');
       this.category = blankCategory();
       await this.load();
+      await this.store.refreshContent();
     } catch (e) {
       this.error.set(message(e));
     } finally {
@@ -145,6 +158,7 @@ export class Admin implements OnInit {
     try {
       await this.store.send('DELETE', '/admin/categories/' + c.id);
       await this.load();
+      await this.store.refreshContent();
     } catch (e) {
       this.error.set(message(e));
     }

@@ -29,9 +29,9 @@ export class Shop implements OnInit {
   note = '';
   key = crypto.randomUUID();
   request = 0;
-  maps =
-    'https://www.google.com/maps/search/?api=1&query=' +
-    encodeURIComponent('Galerie du Rond-point de Saly Saly Portugal Sénégal');
+  get maps() {
+    return this.store.maps;
+  }
   constructor() {
     effect(() => {
       const items = this.store.cart();
@@ -81,7 +81,7 @@ export class Shop implements OnInit {
     try {
       const r = await this.store.send<{ order: Order; whatsapp_url: string }>(
         'POST',
-        '/orders',
+        '/guest/orders',
         {
           items: this.store.cart(),
           customer_name: this.name,

@@ -13,6 +13,8 @@
           ['dashboard', 'Vue d’ensemble'],
           ['products', 'Produits'],
           ['categories', 'Catégories'],
+          ['stock', 'Suivi du stock'],
+          ['settings', 'Réglages du site'],
           ['orders', 'Demandes de commande'],
         ];
         track t[0]
@@ -56,30 +58,13 @@
       }
       @switch (view()) {
         @case ('dashboard') {
-          <h1>Votre boutique, en un regard</h1>
-          <div class="three-columns grid grid-cols-1 md:grid-cols-3">
-            <div class="panel">
-              <p>PRODUITS</p>
-              <h2>{{ data()?.total || 0 }}</h2>
-            </div>
-            <div class="panel">
-              <p>CATÉGORIES</p>
-              <h2>{{ categories().length }}</h2>
-            </div>
-            <div class="panel">
-              <p>COMMANDES</p>
-              <h2>WhatsApp</h2>
-            </div>
-          </div>
-          <div class="panel stack">
-            <h2>Faites vivre votre sélection</h2>
-            <button class="dark" (click)="tab('products'); editProduct()">Ajouter un produit</button
-            ><button (click)="tab('categories')">Gérer les catégories</button>
-          </div>
-          <p class="caption">
-            Une demande enregistrée ne signifie pas que le message WhatsApp a été envoyé.
-            Confirmez-la après votre échange avec le client.
-          </p>
+          <app-admin-dashboard (navigate)="tab($event)" />
+        }
+        @case ('settings') {
+          <app-admin-settings />
+        }
+        @case ('stock') {
+          <app-admin-stock />
         }
         @case ('products') {
           @if (edit()) {

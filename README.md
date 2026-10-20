@@ -10,7 +10,7 @@ Node 24 : `npm ci`, puis `npm start` sur http://localhost:4200. Démarrer l’AP
 
 ## Fonctions
 
-Accueil, catalogue avec recherche, filtres, tri et pagination dans l’URL, fiche produit, panier conservé localement, inscription/connexion, demandes personnelles, coordonnées de la boutique et Google Maps. Le checkout authentifié vérifie le panier côté API, enregistre la demande et redirige vers WhatsApp. Le client doit ensuite envoyer le message et attendre la confirmation de la boutique.
+Accueil, catalogue avec recherche, filtres, tri et pagination dans l’URL, fiche produit, panier conservé localement, commande sans compte, coordonnées de la boutique et Google Maps. Le checkout invité collecte le nom, le téléphone et le message, puis vérifie le panier côté API, enregistre la demande et redirige vers WhatsApp. Le client doit ensuite envoyer le message et attendre la confirmation de la boutique.
 
 Administration : produits et catégories, import photo, prix, stock, visibilité, liste des demandes et confirmation. Les gardes Angular servent à la navigation ; l’API contrôle réellement les autorisations.
 
@@ -25,3 +25,7 @@ Les prix et produits de la maquette ne sont pas chargés en production : ajouter
 ## Interface responsive et PWA
 
 Tailwind CSS 4 et Angular Material 22, thèmes issus de Figma. Navigation mobile, administration avec tiroir et cartes produits sur téléphone, champs Material, grilles adaptatives de 320 à 1440 px. Site installable (manifeste et service worker Angular en production). Voir [les choix de structure, la référence du template et les consignes CSS/PWA](docs/template-adaptation.md).
+
+## Nouvelle gestion
+
+Consulter [le fonctionnement de la boutique sans compte et de l’administration](docs/gestion-boutique.md) pour les statistiques, les stocks, les réglages et le bouton GPS.

@@ -1,5 +1,7 @@
-import { Component, inject, signal, OnDestroy } from '@angular/core';
-import { RouterOutlet, RouterLink, Router } from '@angular/router';
+import { Component, inject, signal, effect, OnDestroy } from '@angular/core';
+import { RouterOutlet, Router } from '@angular/router';
+import { SiteHeader } from './components/site-header/site-header';
+import { SiteFooter } from './components/site-footer/site-footer';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { SwUpdate } from '@angular/service-worker';
@@ -10,7 +12,7 @@ type InstallPrompt = Event & {
   userChoice: Promise<{ outcome: string }>;
 };
 @Component({
-  imports: [RouterOutlet, RouterLink, MatMenuModule, MatButtonModule],
+  imports: [RouterOutlet, MatMenuModule, MatButtonModule, SiteHeader, SiteFooter],
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',
@@ -26,6 +28,14 @@ export class App implements OnDestroy {
   };
   private installed = () => this.installPrompt.set(null);
   constructor() {
+    effect(() => {
+      const settings = this.store.settings();
+      document.title = settings['store_name'] + ' · ' + settings['tagline'];
+      document
+        .querySelector('meta[name="description"]')
+        ?.setAttribute('content', settings['about']);
+      document.querySelector('link[rel="icon"]')?.setAttribute('href', settings['logo']);
+    });
     window.addEventListener('online', this.connectionChanged);
     window.addEventListener('offline', this.connectionChanged);
     window.addEventListener('beforeinstallprompt', this.beforeInstall);

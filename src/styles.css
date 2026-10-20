@@ -1204,3 +1204,16 @@ footer {
     font-size: 6px;
   }
 }
+
+@media (min-width: 1024px) {
+  .order-summary {
+    top: 180px;
+  }
+}
+#catalogue {
+  scroll-margin-top: 200px;
+}
+
+.container {
+  max-width: none;
+}

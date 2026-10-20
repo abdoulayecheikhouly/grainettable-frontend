@@ -22,20 +22,18 @@ test('catalogue filters, pagination, cart persistence and mobile layout', async 
     .toBeTruthy();
   await page.screenshot({ path: '../../work/mobile-cart.png', fullPage: true });
 });
-test('customer registration and WhatsApp order preparation without sending a message', async ({
+test('guest checkout collects contact details and opens WhatsApp without an account', async ({
   page,
 }) => {
-  await page.goto('/inscription');
-  await page.getByLabel('Prénom et nom').fill('Client Test');
-  await page.getByLabel('Téléphone', { exact: true }).fill('772506666');
-  await page.getByLabel('Adresse e-mail').fill('test-' + Date.now() + '@example.com');
-  await page.getByLabel('Mot de passe *', { exact: true }).fill('Test-password-123456');
-  await page.getByRole('button', { name: 'Créer mon compte' }).click();
-  await expect(page).toHaveURL(/produits/);
+  await page.goto('/produits');
+  await expect(page.getByRole('link', { name: /^(Mon compte|Connexion)$/ })).toHaveCount(0);
   await page.locator('.product-card button').first().click();
   await page.getByRole('link', { name: 'Panier (1)' }).click();
   await page.getByRole('link', { name: 'Préparer ma commande' }).click();
   await expect(page).toHaveURL(/commande/);
+  await page.getByLabel('Prénom et nom').fill('Client invité');
+  await page.getByLabel('Téléphone *', { exact: true }).fill('772506666');
+  await page.getByLabel('Message à la boutique').fill('Retrait en boutique');
   await page.route('https://wa.me/**', (route) =>
     route.fulfill({
       status: 200,
@@ -44,7 +42,7 @@ test('customer registration and WhatsApp order preparation without sending a mes
     }),
   );
   let body: any;
-  await page.route('**/api/orders', async (route) => {
+  await page.route('**/api/guest/orders', async (route) => {
     const response = await route.fetch();
     expect(response.ok()).toBeTruthy();
     body = await response.json();
@@ -55,8 +53,11 @@ test('customer registration and WhatsApp order preparation without sending a mes
   expect(body.whatsapp_url).toContain('https://wa.me/221772506666');
   expect(body.order.status).toBe('awaiting_confirmation');
   await page.waitForURL('https://wa.me/**');
+  expect(body.order.customer_name).toBe('Client invité');
+  expect(body.order.user_id).toBeNull();
+  expect(decodeURIComponent(body.whatsapp_url)).toContain('772506666');
   await page.goto('/compte');
-  await expect(page.getByText(body.order.id, { exact: true })).toBeVisible();
+  await expect(page).toHaveURL(/panier/);
 });
 test('administrator creates category and product; public catalogue updates', async ({ page }) => {
   await page.goto('/connexion?retour=/admin');

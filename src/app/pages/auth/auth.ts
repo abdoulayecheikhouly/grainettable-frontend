@@ -29,11 +29,10 @@ export class Auth implements OnInit {
     this.admin = this.route.snapshot.queryParamMap.get('admin') === 'true';
     const t = this.route.snapshot.queryParamMap.get('retour') || '/produits';
     this.target = t.startsWith('/') && !t.startsWith('//') ? t : '/produits';
-    this.admin = this.admin || this.target === '/admin';
+    this.admin = true;
+    this.target = '/admin';
     if (this.store.user()?.role === 'customer' && this.target === '/admin')
-      this.error.set(
-        'Cet espace est réservé à l’équipe. Déconnectez-vous pour utiliser un compte administrateur.',
-      );
+      this.error.set('Cet espace est réservé à l’équipe. Utilisez vos accès administrateur.');
   }
   async submit() {
     this.busy.set(true);

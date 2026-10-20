@@ -1,9 +1,9 @@
-<div class="ribbon">L’art de recevoir, au cœur de Saly</div>
+<div class="ribbon">{{ store.settings()['announcement'] }}</div>
 <section class="hero container grid grid-cols-1 lg:grid-cols-2">
   <div>
     <p class="eyebrow">CAFÉ · CUISINE · ART DE LA TABLE</p>
-    <h1>Le goût des<br />belles choses.</h1>
-    <p class="lead">Des objets choisis avec soin.<br />Des instants à savourer chaque jour.</p>
+    <h1>{{ store.settings()['hero_title'] }}</h1>
+    <p class="lead">{{ store.settings()['hero_subtitle'] }}</p>
     <a class="button" routerLink="/produits">Découvrir nos univers ↗</a>
     <p class="caption">À découvrir dans notre boutique de Saly</p>
   </div>
@@ -17,6 +17,7 @@
   <span>✧ Une sélection soignée</span><span>✧ Le sens du détail</span
   ><span>✧ Votre boutique à Saly</span>
 </div>
+<app-catalogue [embedded]="true" />
 <section class="container section">
   <div class="section-title">
     <h2>À chaque envie,<br />son univers.</h2>
@@ -44,7 +45,7 @@
       Une belle table, un café partagé, le plaisir de cuisiner. Nous sélectionnons des produits qui
       allient qualité, élégance et praticité pour accompagner vos moments du quotidien.
     </p>
-    <a class="button light" href="https://wa.me/221772506666" target="_blank" rel="noreferrer"
+    <a class="button light" [href]="store.whatsapp" target="_blank" rel="noreferrer"
       >Contacter la boutique ↗</a
     >
   </div>

@@ -1,6 +1,10 @@
-<div class="container">
+<section class="container" id="catalogue">
   <div class="heading">
-    <h1>Tous nos produits</h1>
+    @if (embedded()) {
+      <h2>Notre sélection</h2>
+    } @else {
+      <h1>Tous nos produits</h1>
+    }
     <p>Café, cuisine, arts de la table et fruits secs : trouvez votre prochain essentiel.</p>
   </div>
   @if (error()) {
@@ -87,4 +91,4 @@
       }
     </div>
   </div>
-</div>
+</section>

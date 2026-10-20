@@ -8,11 +8,26 @@
   >
   <div class="product-card-body flex flex-col gap-3 grow">
     <p class="caption category">{{ product().category_name }}</p>
-    <h3>
+    <h3 [title]="product().name">
       <a [routerLink]="['/produits', product().id]">{{ product().name }}</a>
     </h3>
-    <strong>{{ money(product().price) }}</strong
-    ><a class="product-detail-link" [routerLink]="['/produits', product().id]"
+    <strong>{{ money(product().price) }}</strong>
+    <div class="product-facts">
+      <span
+        ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+          <path d="m3 7 9-4 9 4-9 4-9-4Zm0 0v10l9 4 9-4V7M12 11v10" /></svg
+        >{{ product().category_name }}</span
+      ><span
+        ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+          <path d="M4 4h16v16H4zM8 8h8M8 12h8M8 16h4" /></svg
+        >{{ product().sku }}</span
+      ><span
+        ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+          <path d="m4 12 5 5L20 6" /></svg
+        >{{ product().stock ? 'En stock' : 'Épuisé' }}</span
+      >
+    </div>
+    <a class="product-detail-link" [routerLink]="['/produits', product().id]"
       >Voir le produit <span aria-hidden="true">↗</span></a
     ><button mat-flat-button [disabled]="product().stock === 0" (click)="add.emit(product())">
       {{ product().stock ? 'Ajouter au panier' : 'Indisponible' }}

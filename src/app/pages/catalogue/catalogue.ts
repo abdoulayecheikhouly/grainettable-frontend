@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, signal, input, OnInit, OnDestroy } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -15,6 +15,7 @@ import { Pagination } from '../../pagination';
   templateUrl: './catalogue.html',
 })
 export class Catalogue implements OnInit, OnDestroy {
+  embedded = input(false);
   wideFilters = toSignal(inject(BreakpointObserver).observe('(min-width: 1024px)'));
   store = inject(Store);
   route = inject(ActivatedRoute);

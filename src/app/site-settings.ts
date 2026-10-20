@@ -1,0 +1,23 @@
+export type SiteSettings = Record<string, string>;
+export const defaultSettings: SiteSettings = {
+  store_name: 'GRAIN & TABLE',
+  tagline: 'La qualité de la table',
+  announcement: 'L’art de recevoir, au cœur de Saly',
+  hero_title: 'Le goût des belles choses.',
+  hero_subtitle: 'Des objets choisis avec soin. Des instants à savourer chaque jour.',
+  about: 'Votre adresse dédiée à l’art de la table, au café et aux équipements de cuisine.',
+  address: 'Galerie du Rond-point de Saly · Saly Portugal, Sénégal',
+  phone: '+221 77 250 66 66',
+  secondary_phone: '+221 77 537 54 99',
+  whatsapp: '221772506666',
+  email: '',
+  opening_hours: 'Contactez-nous pour connaître nos horaires.',
+  facebook: '',
+  instagram: '',
+  youtube: '',
+  tiktok: '',
+  linkedin: '',
+  latitude: '',
+  longitude: '',
+  logo: '/assets/emblem.svg',
+};
