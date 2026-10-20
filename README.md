@@ -21,3 +21,7 @@ Image Docker Node 24 → Nginx sans privilèges sur 8080. Les requêtes /api son
 Le workflow GitHub vérifie le build, l’audit et les tests navigateur avec Java 21. Après configuration des secrets `VPS_SSH_KEY` / `VPS_KNOWN_HOSTS` et de la variable `DEPLOY_ENABLED=true`, les commits testés sur main sont déployés par un compte SSH à commande forcée. Aucun accès root interactif n’est utilisé par le pipeline.
 
 Les prix et produits de la maquette ne sont pas chargés en production : ajouter les vraies références depuis l’administration. Les photos d’ambiance restent illustratives. Aucun paiement en ligne n’est demandé ; son intégration sera une évolution distincte.
+
+## Interface responsive et PWA
+
+Tailwind CSS 4 et Angular Material 22, thèmes issus de Figma. Navigation mobile, administration avec tiroir et cartes produits sur téléphone, champs Material, grilles adaptatives de 320 à 1440 px. Site installable (manifeste et service worker Angular en production). Voir [les choix de structure, la référence du template et les consignes CSS/PWA](docs/template-adaptation.md).

@@ -1,0 +1,35 @@
+@use '@angular/material' as mat;
+html {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: light,
+        primary: mat.$yellow-palette,
+      ),
+      typography: 'DM Sans',
+      density: 0,
+    )
+  );
+  @include mat.theme-overrides(
+    (
+      primary: #74734c,
+      on-primary: #ffffff,
+      surface: #f7f4ed,
+      on-surface: #292b23,
+      surface-container-low: #f7f4ed,
+      outline: #888575,
+    )
+  );
+  @include mat.button-overrides(
+    (
+      filled-container-shape: 6px,
+      outlined-container-shape: 6px,
+    )
+  );
+  @include mat.sidenav-overrides(
+    (
+      container-shape: 0px,
+      container-background-color: #f7f4ed,
+    )
+  );
+}

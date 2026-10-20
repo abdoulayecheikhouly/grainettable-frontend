@@ -1,9 +1,198 @@
-<div class="container section">@if(error()){<div class="error" role="alert">{{error()}}</div>}
-@switch(view()){
- @case('product'){@if(product();as p){<p class="caption"><a routerLink="/produits">Tous les produits</a> / {{p.category_name}}</p><div class="detail"><img [src]="p.image" [alt]="p.name"/><div class="stack"><p class="eyebrow">{{p.category_name}} · {{p.sku}}</p><h1>{{p.name}}</h1><h3>{{money(p.price)}}</h3><p class="multiline">{{p.description}}</p><p>{{p.stock?'Disponible · '+p.stock+' en stock':'Indisponible'}}</p><label>Quantité<input type="number" min="1" [max]="p.stock" [(ngModel)]="qty"/></label><button class="dark" [disabled]="!p.stock||qty<1||qty>p.stock" (click)="add()">Ajouter au panier</button><a routerLink="/boutique">Voir la boutique à Saly ↗</a></div></div>}@else if(!error()){<p>Chargement du produit…</p>}}
- @case('cart'){<h1>Votre panier</h1><p>Vérifiez votre sélection avant de préparer votre demande.</p>@if(!store.cart().length){<div class="empty"><h2>Votre panier attend vos envies.</h2><a class="button" routerLink="/produits">Découvrir le catalogue</a></div>}@else{<div class="two-columns section"><div class="stack">@for(i of quote()?.items;track i.product_id){<article class="cart-item"><img [src]="i.image" [alt]="i.name"/><div class="stack tight"><h3>{{i.name}}</h3><strong>{{money(i.unit_price)}}</strong><div class="quantity"><button [attr.aria-label]="'Diminuer '+i.name" (click)="quantity(i.product_id,i.quantity-1)">−</button><span>{{i.quantity}}</span><button [attr.aria-label]="'Augmenter '+i.name" [disabled]="i.quantity>=i.stock||i.quantity>=100" (click)="quantity(i.product_id,i.quantity+1)">+</button></div><button class="text-button" (click)="quantity(i.product_id,0)">Retirer</button></div></article>}@if(error()){@for(i of store.cart();track i.product_id){<div class="panel">Produit #{{i.product_id}} · Quantité {{i.quantity}}<button class="text-button" (click)="quantity(i.product_id,0)">Retirer cet article</button></div>}}<a routerLink="/produits">← Continuer mes achats</a><button class="text-button" (click)="store.clear()">Vider le panier</button></div><aside class="panel stack"><h2>Votre sélection</h2><p>Retrait · Boutique de Saly</p><hr/><strong>Total articles : {{quote()?money(quote()!.total):'Vérification…'}}</strong>@if(quote()){<a class="button dark" routerLink="/commande">Préparer ma commande</a>}<p class="caption">La boutique confirmera votre demande sur WhatsApp. Aucun paiement en ligne n’est demandé.</p></aside></div>}}
- @case('checkout'){@if(result();as r){<h1>Votre demande est préparée</h1><p>Référence {{r.order.id}} · {{money(r.order.total)}}</p><p>Appuyez sur Envoyer dans WhatsApp. La boutique doit encore confirmer votre demande.</p><a class="button green" [href]="r.whatsapp_url">Ouvrir WhatsApp ↗</a><a class="button light" routerLink="/compte">Mes demandes</a>}@else if(!store.cart().length){<h1>Votre panier est vide</h1><a routerLink="/produits">Voir le catalogue</a>}@else{<h1>Préparer votre commande</h1><p>Panier → Coordonnées → WhatsApp</p><form class="two-columns section" (ngSubmit)="order()"><div class="stack"><h2>Vos coordonnées</h2><label>Prénom et nom *<input required name="name" maxlength="100" autocomplete="name" [(ngModel)]="name"/></label><label>Téléphone *<input required name="phone" type="tel" pattern="[+0-9 ()-]{8,24}" maxlength="24" autocomplete="tel" [(ngModel)]="phone"/></label><label>Retrait<input value="Boutique Grain & Table · Saly" readonly/></label><label>Message à la boutique<textarea name="note" maxlength="1000" rows="4" [(ngModel)]="note"></textarea></label><p class="caption">Vos coordonnées seront reprises dans le message WhatsApp.</p></div><aside class="panel stack"><h2>Votre demande</h2>@for(i of quote()?.items;track i.product_id){<div>{{i.quantity}} × {{i.name}}<p>{{money(i.unit_price*i.quantity)}}</p></div>}<hr/><strong>Total articles : {{quote()?money(quote()!.total):'Vérification…'}}</strong><button class="green" [disabled]="busy()||!quote()">{{busy()?'Préparation…':'Continuer sur WhatsApp ↗'}}</button><p class="caption">WhatsApp s’ouvre avec un message préparé. Appuyez sur Envoyer pour le transmettre. La boutique confirmera la commande. Aucun paiement en ligne.</p><a routerLink="/panier">← Modifier mon panier</a></aside></form>}}
- @case('location'){<h1>Retrouvez-nous à Saly</h1><p>Votre adresse pour le café, la cuisine et l’art de la table.</p><div class="two-columns section"><div class="location-card panel"><p class="eyebrow">SALY PORTUGAL</p><img src="/assets/emblem.svg" width="100" height="100" alt=""/><h2>Galerie du Rond-point de Saly</h2><p>Saly Portugal, Sénégal</p><a class="button dark" [href]="maps" target="_blank" rel="noreferrer">Ouvrir Google Maps ↗</a></div><div class="stack"><h2>Une visite,<br/>une belle découverte.</h2><p>Galerie du Rond-point de Saly<br/>Saly Portugal, Sénégal</p><a href="tel:+221772506666">77 250 66 66</a><a href="tel:+221775375499">77 537 54 99</a><a class="button green" href="https://wa.me/221772506666" target="_blank" rel="noreferrer">Écrire sur WhatsApp ↗</a><p class="caption">Contactez-nous pour connaître les horaires et préciser votre itinéraire.</p></div></div>}
- @case('account'){<h1>Bonjour, {{store.user()?.name}}</h1><p>Retrouvez vos demandes de commande.</p>@for(o of orders()?.items;track o.id){<div class="panel order-card"><h3>{{o.id}}</h3><p>{{money(o.total)}} · {{status(o.status)}}</p>@for(i of o.items;track $index){<p>{{i.quantity}} × {{i.name}}</p>}</div>}@if(orders()?.total===0){<p>Vous n’avez pas encore de demande. <a routerLink="/produits">Découvrir le catalogue</a></p>}@if(orders();as d){<app-pagination [page]="d.page" [pages]="d.pages" (change)="loadOrders($event)"/>}}
-}
+<div class="container section">
+  @if (error()) {
+    <div class="error" role="alert">{{ error() }}</div>
+  }
+  @switch (view()) {
+    @case ('product') {
+      @if (product(); as p) {
+        <p class="caption">
+          <a routerLink="/produits">Tous les produits</a> / {{ p.category_name }}
+        </p>
+        <div class="detail grid grid-cols-1 lg:grid-cols-2">
+          <img [src]="p.image" [alt]="p.name" />
+          <div class="stack">
+            <p class="eyebrow">{{ p.category_name }} · {{ p.sku }}</p>
+            <h1>{{ p.name }}</h1>
+            <h3>{{ money(p.price) }}</h3>
+            <p class="multiline">{{ p.description }}</p>
+            <p>{{ p.stock ? 'Disponible · ' + p.stock + ' en stock' : 'Indisponible' }}</p>
+            <label>Quantité<input type="number" min="1" [max]="p.stock" [(ngModel)]="qty" /></label
+            ><button class="dark" [disabled]="!p.stock || qty < 1 || qty > p.stock" (click)="add()">
+              Ajouter au panier</button
+            ><a routerLink="/boutique">Voir la boutique à Saly ↗</a>
+          </div>
+        </div>
+      } @else if (!error()) {
+        <p>Chargement du produit…</p>
+      }
+    }
+    @case ('cart') {
+      <h1>Votre panier</h1>
+      <p>Vérifiez votre sélection avant de préparer votre demande.</p>
+      @if (!store.cart().length) {
+        <div class="empty">
+          <h2>Votre panier attend vos envies.</h2>
+          <a class="button" routerLink="/produits">Découvrir le catalogue</a>
+        </div>
+      } @else {
+        <div
+          class="two-columns section grid grid-cols-1 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]"
+        >
+          <div class="stack">
+            @for (i of quote()?.items; track i.product_id) {
+              <app-cart-item [item]="i" (quantityChange)="quantity(i.product_id, $event)" />
+            }
+            @if (error()) {
+              @for (i of store.cart(); track i.product_id) {
+                <div class="panel">
+                  Produit #{{ i.product_id }} · Quantité {{ i.quantity
+                  }}<button class="text-button" (click)="quantity(i.product_id, 0)">
+                    Retirer cet article
+                  </button>
+                </div>
+              }
+            }
+            <a routerLink="/produits">← Continuer mes achats</a
+            ><button class="text-button" (click)="store.clear()">Vider le panier</button>
+          </div>
+          <aside class="panel stack order-summary lg:sticky lg:top-28">
+            <h2>Votre sélection</h2>
+            <p>Retrait · Boutique de Saly</p>
+            <hr />
+            <strong
+              >Total articles : {{ quote() ? money(quote()!.total) : 'Vérification…' }}</strong
+            >
+            @if (quote()) {
+              <a class="button dark" routerLink="/commande">Préparer ma commande</a>
+            }
+            <p class="caption">
+              La boutique confirmera votre demande sur WhatsApp. Aucun paiement en ligne n’est
+              demandé.
+            </p>
+          </aside>
+        </div>
+      }
+    }
+    @case ('checkout') {
+      @if (result(); as r) {
+        <h1>Votre demande est préparée</h1>
+        <p>Référence {{ r.order.id }} · {{ money(r.order.total) }}</p>
+        <p>Appuyez sur Envoyer dans WhatsApp. La boutique doit encore confirmer votre demande.</p>
+        <a class="button green" [href]="r.whatsapp_url">Ouvrir WhatsApp ↗</a
+        ><a class="button light" routerLink="/compte">Mes demandes</a>
+      } @else if (!store.cart().length) {
+        <h1>Votre panier est vide</h1>
+        <a routerLink="/produits">Voir le catalogue</a>
+      } @else {
+        <h1>Préparer votre commande</h1>
+        <p>Panier → Coordonnées → WhatsApp</p>
+        <form
+          class="two-columns section grid grid-cols-1 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]"
+          (ngSubmit)="order()"
+        >
+          <div class="stack">
+            <h2>Vos coordonnées</h2>
+            <label
+              >Prénom et nom *<input
+                required
+                name="name"
+                maxlength="100"
+                autocomplete="name"
+                [(ngModel)]="name" /></label
+            ><label
+              >Téléphone *<input
+                required
+                name="phone"
+                type="tel"
+                pattern="[+0-9 ()-]{8,24}"
+                maxlength="24"
+                autocomplete="tel"
+                [(ngModel)]="phone" /></label
+            ><label>Retrait<input value="Boutique Grain & Table · Saly" readonly /></label
+            ><label
+              >Message à la boutique<textarea
+                name="note"
+                maxlength="1000"
+                rows="4"
+                [(ngModel)]="note"
+              ></textarea>
+            </label>
+            <p class="caption">Vos coordonnées seront reprises dans le message WhatsApp.</p>
+          </div>
+          <aside class="panel stack order-summary lg:sticky lg:top-28">
+            <h2>Votre demande</h2>
+            @for (i of quote()?.items; track i.product_id) {
+              <div>
+                {{ i.quantity }} × {{ i.name }}
+                <p>{{ money(i.unit_price * i.quantity) }}</p>
+              </div>
+            }
+            <hr />
+            <strong>Total articles : {{ quote() ? money(quote()!.total) : 'Vérification…' }}</strong
+            ><button class="green" [disabled]="busy() || !quote()">
+              {{ busy() ? 'Préparation…' : 'Continuer sur WhatsApp ↗' }}
+            </button>
+            <p class="caption">
+              WhatsApp s’ouvre avec un message préparé. Appuyez sur Envoyer pour le transmettre. La
+              boutique confirmera la commande. Aucun paiement en ligne.
+            </p>
+            <a routerLink="/panier">← Modifier mon panier</a>
+          </aside>
+        </form>
+      }
+    }
+    @case ('location') {
+      <h1>Retrouvez-nous à Saly</h1>
+      <p>Votre adresse pour le café, la cuisine et l’art de la table.</p>
+      <div
+        class="two-columns section grid grid-cols-1 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]"
+      >
+        <div class="location-card panel">
+          <p class="eyebrow">SALY PORTUGAL</p>
+          <img src="/assets/emblem.svg" width="100" height="100" alt="" />
+          <h2>Galerie du Rond-point de Saly</h2>
+          <p>Saly Portugal, Sénégal</p>
+          <a class="button dark" [href]="maps" target="_blank" rel="noreferrer"
+            >Ouvrir Google Maps ↗</a
+          >
+        </div>
+        <div class="stack">
+          <h2>Une visite,<br />une belle découverte.</h2>
+          <p>Galerie du Rond-point de Saly<br />Saly Portugal, Sénégal</p>
+          <a href="tel:+221772506666">77 250 66 66</a><a href="tel:+221775375499">77 537 54 99</a
+          ><a
+            class="button green"
+            href="https://wa.me/221772506666"
+            target="_blank"
+            rel="noreferrer"
+            >Écrire sur WhatsApp ↗</a
+          >
+          <p class="caption">
+            Contactez-nous pour connaître les horaires et préciser votre itinéraire.
+          </p>
+        </div>
+      </div>
+    }
+    @case ('account') {
+      <h1>Bonjour, {{ store.user()?.name }}</h1>
+      <p>Retrouvez vos demandes de commande.</p>
+      @for (o of orders()?.items; track o.id) {
+        <div class="panel order-card">
+          <h3>{{ o.id }}</h3>
+          <p>{{ money(o.total) }} · {{ status(o.status) }}</p>
+          @for (i of o.items; track $index) {
+            <p>{{ i.quantity }} × {{ i.name }}</p>
+          }
+        </div>
+      }
+      @if (orders()?.total === 0) {
+        <p>
+          Vous n’avez pas encore de demande. <a routerLink="/produits">Découvrir le catalogue</a>
+        </p>
+      }
+      @if (orders(); as d) {
+        <app-pagination [page]="d.page" [pages]="d.pages" (change)="loadOrders($event)" />
+      }
+    }
+  }
 </div>

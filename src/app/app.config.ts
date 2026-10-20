@@ -1,8 +1,19 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { isDevMode, ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { provideServiceWorker } from '@angular/service-worker';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient, withXsrfConfiguration } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideBrowserGlobalErrorListeners(), provideRouter(routes),provideHttpClient(withXsrfConfiguration({cookieName:'XSRF-TOKEN',headerName:'X-XSRF-TOKEN'}))],
+  providers: [
+    provideServiceWorker('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      registrationStrategy: 'registerWhenStable:30000',
+    }),
+    provideBrowserGlobalErrorListeners(),
+    provideRouter(routes),
+    provideHttpClient(
+      withXsrfConfiguration({ cookieName: 'XSRF-TOKEN', headerName: 'X-XSRF-TOKEN' }),
+    ),
+  ],
 };

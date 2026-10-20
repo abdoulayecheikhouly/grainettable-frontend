@@ -45,3 +45,7 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+/src/material-theme.css
+/build-check.log
+/src/generated-styles.css

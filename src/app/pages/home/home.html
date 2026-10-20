@@ -1,3 +1,70 @@
-<div class="ribbon">L’art de recevoir, au cœur de Saly</div><section class="hero container"><div><p class="eyebrow">CAFÉ · CUISINE · ART DE LA TABLE</p><h1>Le goût des<br/>belles choses.</h1><p class="lead">Des objets choisis avec soin.<br/>Des instants à savourer chaque jour.</p><a class="button" routerLink="/produits">Découvrir nos univers ↗</a><p class="caption">À découvrir dans notre boutique de Saly</p></div><img class="hero-image" src="/assets/cafe.jpeg" alt="Machine à café et tasse sur un plan de travail en pierre"/></section>
-<div class="values"><span>✧ Une sélection soignée</span><span>✧ Le sens du détail</span><span>✧ Votre boutique à Saly</span></div><section class="container section"><div class="section-title"><h2>À chaque envie,<br/>son univers.</h2><p>De la première gorgée à la dernière touche de décoration, cultivez l’art de bien vivre.</p></div><div class="universes">@for(u of universes;track u[0];let i=$index){<a routerLink="/produits"><img [src]="'/assets/'+u[0]+'.jpeg'" [alt]="u[1]" loading="lazy"/><h3><small>0{{i+1}}</small>{{u[1]}} ↗</h3><p>{{u[2]}}</p></a>}</div></section>
-<section class="feature"><img src="/assets/table.jpeg" alt="Une table dressée avec soin" loading="lazy"/><div><p class="eyebrow">LA MAISON GRAIN & TABLE</p><h2>La qualité se vit<br/>dans les détails.</h2><p>Une belle table, un café partagé, le plaisir de cuisiner. Nous sélectionnons des produits qui allient qualité, élégance et praticité pour accompagner vos moments du quotidien.</p><a class="button light" href="https://wa.me/221772506666" target="_blank" rel="noreferrer">Contacter la boutique ↗</a></div></section><section class="container section"><p class="eyebrow">À VOTRE ÉCOUTE</p><h2>Un besoin, une envie ?<br/>Parlons-en.</h2><div class="three-columns"><div><h3>Découvrir les produits</h3><p>Machines à café, capsules, ustensiles, vaisselle et fruits secs.</p></div><div><h3>Vérifier une disponibilité</h3><p>Consultez le catalogue et contactez la boutique pour une précision.</p></div><div><h3>Nous rendre visite</h3><p>Retrouvez-nous à la Galerie du Rond-point de Saly.</p></div></div><a routerLink="/boutique" class="button">Trouver la boutique ↗</a></section>
+<div class="ribbon">L’art de recevoir, au cœur de Saly</div>
+<section class="hero container grid grid-cols-1 lg:grid-cols-2">
+  <div>
+    <p class="eyebrow">CAFÉ · CUISINE · ART DE LA TABLE</p>
+    <h1>Le goût des<br />belles choses.</h1>
+    <p class="lead">Des objets choisis avec soin.<br />Des instants à savourer chaque jour.</p>
+    <a class="button" routerLink="/produits">Découvrir nos univers ↗</a>
+    <p class="caption">À découvrir dans notre boutique de Saly</p>
+  </div>
+  <img
+    class="hero-image"
+    src="/assets/cafe.jpeg"
+    alt="Machine à café et tasse sur un plan de travail en pierre"
+  />
+</section>
+<div class="values">
+  <span>✧ Une sélection soignée</span><span>✧ Le sens du détail</span
+  ><span>✧ Votre boutique à Saly</span>
+</div>
+<section class="container section">
+  <div class="section-title">
+    <h2>À chaque envie,<br />son univers.</h2>
+    <p>De la première gorgée à la dernière touche de décoration, cultivez l’art de bien vivre.</p>
+  </div>
+  <div class="universes grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
+    @for (u of universes; track u[0]; let i = $index) {
+      <a routerLink="/produits"
+        ><img [src]="'/assets/' + u[0] + '.jpeg'" [alt]="u[1]" loading="lazy" />
+        <h3>
+          <small>0{{ i + 1 }}</small
+          >{{ u[1] }} ↗
+        </h3>
+        <p>{{ u[2] }}</p></a
+      >
+    }
+  </div>
+</section>
+<section class="feature grid grid-cols-1 lg:grid-cols-2">
+  <img src="/assets/table.jpeg" alt="Une table dressée avec soin" loading="lazy" />
+  <div>
+    <p class="eyebrow">LA MAISON GRAIN & TABLE</p>
+    <h2>La qualité se vit<br />dans les détails.</h2>
+    <p>
+      Une belle table, un café partagé, le plaisir de cuisiner. Nous sélectionnons des produits qui
+      allient qualité, élégance et praticité pour accompagner vos moments du quotidien.
+    </p>
+    <a class="button light" href="https://wa.me/221772506666" target="_blank" rel="noreferrer"
+      >Contacter la boutique ↗</a
+    >
+  </div>
+</section>
+<section class="container section">
+  <p class="eyebrow">À VOTRE ÉCOUTE</p>
+  <h2>Un besoin, une envie ?<br />Parlons-en.</h2>
+  <div class="three-columns grid grid-cols-1 md:grid-cols-3">
+    <div>
+      <h3>Découvrir les produits</h3>
+      <p>Machines à café, capsules, ustensiles, vaisselle et fruits secs.</p>
+    </div>
+    <div>
+      <h3>Vérifier une disponibilité</h3>
+      <p>Consultez le catalogue et contactez la boutique pour une précision.</p>
+    </div>
+    <div>
+      <h3>Nous rendre visite</h3>
+      <p>Retrouvez-nous à la Galerie du Rond-point de Saly.</p>
+    </div>
+  </div>
+  <a routerLink="/boutique" class="button">Trouver la boutique ↗</a>
+</section>
