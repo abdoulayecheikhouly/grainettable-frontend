@@ -141,9 +141,9 @@
 }
 @media (hover: hover) and (pointer: fine) {
   .product-card:hover {
-    transform: translateY(-4px);
+    transform: perspective(1000px) rotateX(2deg) rotateY(-4deg) translateY(-5px);
     border-color: #b6ac90;
-    box-shadow: 0 12px 28px #30372c12;
+    box-shadow: 10px 18px 34px #30372c24;
   }
 }
 .product-card:focus-within {

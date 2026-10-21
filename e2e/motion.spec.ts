@@ -26,6 +26,15 @@ test('sections reveal on scroll and cart gives animated feedback', async ({ page
     .poll(() => page.evaluate(() => (window as any).__motion.length))
     .toBeGreaterThan(before);
   await page.goto('/produits');
+  await page.locator('.product-card').first().hover();
+  await expect
+    .poll(() =>
+      page
+        .locator('.product-card')
+        .first()
+        .evaluate((e) => getComputedStyle(e).transform.startsWith('matrix3d(')),
+    )
+    .toBeTruthy();
   await page
     .locator('.product-card')
     .first()
