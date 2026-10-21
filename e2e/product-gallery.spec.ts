@@ -11,7 +11,8 @@ test('admin uploads product photos and guests browse, zoom and update ratings', 
   await page.getByLabel('Adresse e-mail').fill('admin@grainettable.local');
   await page.getByLabel('Mot de passe *', { exact: true }).fill('Local-test-only-password-2026');
   await page.getByRole('button', { name: 'Se connecter' }).click();
-  await expect(page.getByRole('heading', { name: 'Vue d’ensemble', exact: true })).toBeVisible();
+  await expect(page).toHaveURL(/\/admin$/, { timeout: 30000 });
+  await expect(page.getByRole('heading', { name: 'Vue d’ensemble', exact: true })).toBeVisible({ timeout: 30000 });
   await page.getByRole('button', { name: 'Produits', exact: true }).click();
   await page.getByRole('button', { name: '+ Ajouter un produit', exact: true }).click();
   const name = 'Galerie test ' + Date.now();
