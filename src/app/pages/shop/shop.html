@@ -9,11 +9,69 @@
           <a routerLink="/produits">Tous les produits</a> / {{ p.category_name }}
         </p>
         <div class="detail grid grid-cols-1 lg:grid-cols-2">
-          <img [src]="p.image" [alt]="p.name" />
+          <div class="product-gallery">
+            <button
+              type="button"
+              class="gallery-main"
+              (click)="zoom()"
+              aria-label="Agrandir les photos du produit"
+            >
+              <img [src]="selectedImage() || p.image" [alt]="p.name" /><span
+                >Cliquer pour agrandir ⤢</span
+              >
+            </button>
+            <div class="photo-thumbnails">
+              @for (image of p.images || [p.image]; track image; let i = $index) {
+                <button
+                  type="button"
+                  [attr.aria-label]="'Voir la photo ' + (i + 1)"
+                  [attr.aria-pressed]="(selectedImage() || p.image) === image"
+                  (click)="selectedImage.set(image)"
+                >
+                  <img [src]="image" [alt]="p.name + ' — photo ' + (i + 1)" />
+                </button>
+              }
+            </div>
+          </div>
           <div class="stack">
             <p class="eyebrow">{{ p.category_name }} · {{ p.sku }}</p>
             <h1>{{ p.name }}</h1>
             <h3>{{ money(p.price) }}</h3>
+            <p class="product-rating">
+              ★
+              {{
+                p.rating_count
+                  ? average(p.rating_average) + ' / 5 · ' + p.rating_count + ' note(s)'
+                  : 'Aucune note pour le moment'
+              }}
+            </p>
+            <form class="panel stack" (ngSubmit)="rate()">
+              <h2>Noter ce produit</h2>
+              <fieldset class="rating-stars">
+                <legend>Votre note sur 5</legend>
+                @for (score of [1, 2, 3, 4, 5]; track score) {
+                  <label
+                    ><input
+                      type="radio"
+                      name="rating"
+                      [value]="score"
+                      [(ngModel)]="rating"
+                      required
+                    /><span>{{ score }} ★</span></label
+                  >
+                }
+              </fieldset>
+              <p class="caption">
+                Une note par produit et par navigateur, modifiable. Les notes ne sont pas vérifiées
+                par un achat.
+              </p>
+              <button class="light" [disabled]="ratingBusy() || !rating">
+                {{ ratingBusy() ? 'Envoi…' : 'Enregistrer ma note' }}
+              </button>
+              @if (ratingNotice()) {
+                <p role="status">{{ ratingNotice() }}</p>
+              }
+            </form>
             <p class="multiline">{{ p.description }}</p>
             <p>{{ p.stock ? 'Disponible · ' + p.stock + ' en stock' : 'Indisponible' }}</p>
             <label>Quantité<input type="number" min="1" [max]="p.stock" [(ngModel)]="qty" /></label

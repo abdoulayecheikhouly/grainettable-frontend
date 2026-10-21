@@ -1,4 +1,6 @@
 import { Component, inject, signal, effect, OnInit } from '@angular/core';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ProductZoom } from '../../components/product-zoom';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Store, money, message } from '../../store';
@@ -7,7 +9,7 @@ import { CartItem } from '../../components/cart-item/cart-item';
 import { Pagination } from '../../pagination';
 @Component({
   selector: 'app-shop',
-  imports: [FormsModule, RouterLink, Pagination, CartItem],
+  imports: [FormsModule, RouterLink, Pagination, CartItem, MatDialogModule],
   templateUrl: './shop.html',
 })
 export class Shop implements OnInit {
@@ -22,6 +24,48 @@ export class Shop implements OnInit {
   busy = signal(false);
   result = signal<{ order: Order; whatsapp_url: string } | null>(null);
   money = money;
+  selectedImage = signal('');
+  ratingBusy = signal(false);
+  ratingNotice = signal('');
+  rating = 0;
+  dialog = inject(MatDialog);
+  zoom() {
+    const p = this.product();
+    if (p)
+      this.dialog.open(ProductZoom, {
+        data: {
+          images: p.images?.length ? p.images : [p.image],
+          name: p.name,
+          selected: this.selectedImage() || p.image,
+        },
+        maxWidth: '96vw',
+        width: '1000px',
+        autoFocus: 'first-tabbable',
+      });
+  }
+  async rate() {
+    const p = this.product();
+    if (!p || !this.rating) return;
+    this.ratingBusy.set(true);
+    this.error.set('');
+    this.ratingNotice.set('');
+    try {
+      const summary = await this.store.send<{ rating_average: number; rating_count: number }>(
+        'POST',
+        '/products/' + p.id + '/ratings',
+        { score: Number(this.rating) },
+      );
+      this.product.set({ ...p, ...summary });
+      this.ratingNotice.set('Merci, votre note a été enregistrée.');
+    } catch (e) {
+      this.error.set(message(e));
+    } finally {
+      this.ratingBusy.set(false);
+    }
+  }
+  average(n: number | undefined) {
+    return Number(n || 0).toLocaleString('fr-FR', { maximumFractionDigits: 1 });
+  }
   qty = 1;
   page = 1;
   name = '';

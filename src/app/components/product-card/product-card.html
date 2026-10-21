@@ -12,6 +12,11 @@
       <a [routerLink]="['/produits', product().id]">{{ product().name }}</a>
     </h3>
     <strong>{{ money(product().price) }}</strong>
+    @if (product().rating_count) {
+      <p class="caption">
+        ★ {{ (+product().rating_average!).toFixed(1) }} / 5 · {{ product().rating_count }} note(s)
+      </p>
+    }
     <div class="product-facts">
       <span
         ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">

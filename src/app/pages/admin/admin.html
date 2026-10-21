@@ -129,14 +129,42 @@
                 >
               </div>
               <aside class="panel stack">
-                <h2>Image du produit</h2>
+                <h2>Photos du produit</h2>
                 <img class="preview" [src]="product.image" alt="Aperçu du produit" /><label
-                  >Ajouter une photo<input
+                  >Sélectionner des photos<input
+                    multiple
+                    [disabled]="busy()"
                     type="file"
                     accept="image/jpeg,image/png"
                     (change)="upload($event)"
                 /></label>
-                <p class="caption">JPEG ou PNG · 5 Mo maximum</p>
+                <p class="caption">
+                  8 photos maximum · JPEG ou PNG · 5 Mo par photo. La photo principale apparaît dans
+                  le catalogue.
+                </p>
+                <div class="admin-photo-grid">
+                  @for (image of product.images; track image; let i = $index) {
+                    <div class="stack">
+                      <img [src]="image" [alt]="'Photo ' + (i + 1)" />
+                      <button
+                        type="button"
+                        class="light"
+                        [disabled]="busy()"
+                        (click)="product.image = image"
+                      >
+                        {{ product.image === image ? '✓ Principale' : 'Choisir principale' }}
+                      </button>
+                      <button
+                        type="button"
+                        class="text-button"
+                        [disabled]="busy()"
+                        (click)="removePhoto(image)"
+                      >
+                        Retirer la photo {{ i + 1 }}
+                      </button>
+                    </div>
+                  }
+                </div>
                 <label
                   >Ou choisir un visuel d’ambiance<select name="image" [(ngModel)]="product.image">
                     <option value="/assets/cafe.jpeg">Café</option>

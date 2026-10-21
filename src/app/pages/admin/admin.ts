@@ -21,6 +21,7 @@ const blankProduct = () => ({
   stock: 0,
   status: 'draft',
   image: '/assets/cafe.jpeg',
+  images: [] as string[],
 });
 const blankCategory = () => ({ id: 0, name: '', slug: '', description: '', visible: true });
 @Component({
@@ -101,6 +102,7 @@ export class Admin implements OnInit {
           stock: p.stock,
           status: p.status,
           image: p.image,
+          images: [...(p.images || [p.image])],
         }
       : blankProduct();
     if (!this.product.category_id) this.product.category_id = this.categories()[0]?.id || 0;
@@ -112,6 +114,7 @@ export class Admin implements OnInit {
     this.error.set('');
     try {
       const { id, ...body } = this.product;
+      body.images = [body.image, ...body.images.filter((i) => i !== body.image)];
       await this.store.send(id ? 'PUT' : 'POST', '/admin/products' + (id ? '/' + id : ''), body);
       this.edit.set(false);
       this.notice.set('Produit enregistré');
@@ -163,18 +166,31 @@ export class Admin implements OnInit {
       this.error.set(message(e));
     }
   }
+  removePhoto(image: string) {
+    this.product.images = this.product.images.filter((i) => i !== image);
+    if (this.product.image === image)
+      this.product.image = this.product.images[0] || '/assets/cafe.jpeg';
+  }
   async upload(event: Event) {
-    const input = event.target as HTMLInputElement,
-      file = input.files?.[0];
-    if (!file) return;
+    const input = event.target as HTMLInputElement;
+    const files = Array.from(input.files || []);
+    if (!files.length) return;
     this.busy.set(true);
     this.error.set('');
     try {
-      if (file.size > 5 * 1024 * 1024) throw new Error('Photo trop grande : 5 Mo maximum');
-      const data = new FormData();
-      data.append('file', file);
-      const result = await this.store.send<{ image: string }>('POST', '/admin/uploads', data);
-      this.product.image = result.image;
+      if (this.product.images.length + files.length > 8)
+        throw Error('8 photos maximum par produit');
+      for (const file of files) {
+        if (file.size > 5 * 1024 * 1024 || !['image/jpeg', 'image/png'].includes(file.type))
+          throw Error('Photos JPEG ou PNG · 5 Mo maximum chacune');
+      }
+      for (const file of files) {
+        const data = new FormData();
+        data.append('file', file);
+        const result = await this.store.send<{ image: string }>('POST', '/admin/uploads', data);
+        if (!this.product.images.length) this.product.image = result.image;
+        this.product.images = [...this.product.images, result.image];
+      }
     } catch (e) {
       this.error.set(message(e));
     } finally {
