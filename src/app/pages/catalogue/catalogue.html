@@ -76,8 +76,8 @@
             <app-product-card-skeleton />
           }
         }
-        @for (p of loading() ? [] : data()?.items; track p.id) {
-          <app-product-card [product]="p" (add)="add($event)" />
+        @for (p of loading() ? [] : data()?.items; track p.id; let i = $index) {
+          <app-product-card [appReveal]="i * 65" [product]="p" (add)="add($event)" />
         }
       </div>
       @if (!loading() && !error() && !data()?.items?.length) {

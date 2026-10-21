@@ -45,7 +45,7 @@
             aria-hidden="true"
           >
             <path d="M5 7h14l1 14H4L5 7Z M8 8V6a4 4 0 0 1 8 0v2" /></svg
-          ><b>{{ store.count() }}</b></span
+          ><b [basketPulse]="store.count()">{{ store.count() }}</b></span
         ><span>Panier ({{ store.count() }})</span></a
       ><button
         class="mobile-menu-button"

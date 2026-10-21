@@ -1,3 +1,4 @@
+import { Reveal } from '../../motion';
 import { Component, inject, signal, input, OnInit, OnDestroy } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -11,7 +12,7 @@ import { ProductCardSkeleton } from '../../components/product-card-skeleton/prod
 import { Pagination } from '../../pagination';
 @Component({
   selector: 'app-catalogue',
-  imports: [FormsModule, Pagination, ProductCard, ProductCardSkeleton],
+  imports: [FormsModule, Pagination, ProductCard, ProductCardSkeleton, Reveal],
   templateUrl: './catalogue.html',
 })
 export class Catalogue implements OnInit, OnDestroy {

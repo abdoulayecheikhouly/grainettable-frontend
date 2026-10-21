@@ -221,3 +221,26 @@
 .mobile-menu-button {
   color: var(--cream);
 }
+
+.header-rayons > a {
+  position: relative;
+}
+.header-rayons > a::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 3px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 200ms ease;
+}
+.header-rayons > a:hover::after,
+.header-rayons > a:focus-visible::after {
+  transform: scaleX(1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .header-rayons > a::after {
+    transition: none;
+  }
+}

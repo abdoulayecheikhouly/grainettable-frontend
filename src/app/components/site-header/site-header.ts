@@ -1,3 +1,4 @@
+import { BasketPulse } from '../../motion';
 import { Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { MatMenuModule } from '@angular/material/menu';
@@ -5,7 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { Store } from '../../store';
 @Component({
   selector: 'app-site-header',
-  imports: [RouterLink, MatMenuModule, MatButtonModule],
+  imports: [RouterLink, MatMenuModule, MatButtonModule, BasketPulse],
   templateUrl: './site-header.html',
   styleUrl: './site-header.css',
 })

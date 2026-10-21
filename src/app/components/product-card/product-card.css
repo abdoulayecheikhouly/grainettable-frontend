@@ -132,3 +132,27 @@
     transition: none;
   }
 }
+
+.product-card {
+  transition:
+    box-shadow 240ms ease,
+    transform 240ms ease,
+    border-color 240ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .product-card:hover {
+    transform: translateY(-4px);
+    border-color: #b6ac90;
+    box-shadow: 0 12px 28px #30372c12;
+  }
+}
+.product-card:focus-within {
+  border-color: #74734c;
+}
+@media (prefers-reduced-motion: reduce) {
+  .product-card,
+  .product-card:hover {
+    transition: none;
+    transform: none;
+  }
+}

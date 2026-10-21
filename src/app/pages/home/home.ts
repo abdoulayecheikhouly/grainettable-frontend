@@ -1,8 +1,13 @@
+import { Reveal } from '../../motion';
 import { Catalogue } from '../catalogue/catalogue';
 import { Store } from '../../store';
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-@Component({ selector: 'app-home', imports: [RouterLink, Catalogue], templateUrl: './home.html' })
+@Component({
+  selector: 'app-home',
+  imports: [RouterLink, Catalogue, Reveal],
+  templateUrl: './home.html',
+})
 export class Home {
   store = inject(Store);
   universes = [

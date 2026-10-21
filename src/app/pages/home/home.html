@@ -1,6 +1,6 @@
 <div class="ribbon">{{ store.settings()['announcement'] }}</div>
 <section class="hero container grid grid-cols-1 lg:grid-cols-2">
-  <div>
+  <div appReveal>
     <p class="eyebrow">CAFÉ · CUISINE · ART DE LA TABLE</p>
     <h1>{{ store.settings()['hero_title'] }}</h1>
     <p class="lead">{{ store.settings()['hero_subtitle'] }}</p>
@@ -9,23 +9,24 @@
   </div>
   <img
     class="hero-image"
+    [appReveal]="100"
     src="/assets/cafe.jpeg"
     alt="Machine à café et tasse sur un plan de travail en pierre"
   />
 </section>
-<div class="values">
+<div class="values" appReveal>
   <span>✧ Une sélection soignée</span><span>✧ Le sens du détail</span
   ><span>✧ Votre boutique à Saly</span>
 </div>
 <app-catalogue [embedded]="true" />
 <section class="container section">
-  <div class="section-title">
+  <div class="section-title" appReveal>
     <h2>À chaque envie,<br />son univers.</h2>
     <p>De la première gorgée à la dernière touche de décoration, cultivez l’art de bien vivre.</p>
   </div>
   <div class="universes grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
     @for (u of universes; track u[0]; let i = $index) {
-      <a routerLink="/produits"
+      <a routerLink="/produits" [appReveal]="i * 65"
         ><img [src]="'/assets/' + u[0] + '.jpeg'" [alt]="u[1]" loading="lazy" />
         <h3>
           <small>0{{ i + 1 }}</small
@@ -36,7 +37,7 @@
     }
   </div>
 </section>
-<section class="feature grid grid-cols-1 lg:grid-cols-2">
+<section appReveal class="feature grid grid-cols-1 lg:grid-cols-2">
   <img src="/assets/table.jpeg" alt="Une table dressée avec soin" loading="lazy" />
   <div>
     <p class="eyebrow">LA MAISON GRAIN & TABLE</p>
@@ -50,7 +51,7 @@
     >
   </div>
 </section>
-<section class="container section">
+<section appReveal class="container section">
   <p class="eyebrow">À VOTRE ÉCOUTE</p>
   <h2>Un besoin, une envie ?<br />Parlons-en.</h2>
   <div class="three-columns grid grid-cols-1 md:grid-cols-3">
