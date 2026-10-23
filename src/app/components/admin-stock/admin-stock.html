@@ -4,6 +4,9 @@
 @if (error()) {
   <div class="error" role="alert">{{ error() }}</div>
 }
+@if (conflict()) {
+  <button type="button" class="light" (click)="reloadStock()">Recharger les stocks</button>
+}
 @if (notice()) {
   <div class="success" role="status">{{ notice() }}</div>
 }

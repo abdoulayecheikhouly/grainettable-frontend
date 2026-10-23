@@ -68,6 +68,11 @@
         }
         @case ('products') {
           @if (edit()) {
+            @if (conflict()) {
+              <button type="button" class="light" (click)="reloadProduct()">
+                Recharger la fiche
+              </button>
+            }
             <h1>{{ product.id ? 'Modifier le produit' : 'Ajouter un produit' }}</h1>
             <form
               class="admin-form grid grid-cols-1 xl:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]"

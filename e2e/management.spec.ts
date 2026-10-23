@@ -120,7 +120,13 @@ test('admin manages sales periods, stock, GPS and public site information', asyn
     if (stockId)
       await page.request.patch('/api/admin/products/' + stockId + '/stock', {
         headers: await headers(),
-        data: { stock: originalStock, reason: 'Fin du test navigateur' },
+        data: {
+          stock: originalStock,
+          version: (
+            await (await page.request.get('/api/admin/products?q=Machine')).json()
+          ).items.find((p: any) => p.id === stockId).version,
+          reason: 'Fin du test navigateur',
+        },
       });
   }
 });

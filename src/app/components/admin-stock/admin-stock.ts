@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Store, message, money } from '../../store';
@@ -21,6 +22,7 @@ export class AdminStock implements OnInit {
   error = signal('');
   notice = signal('');
   busy = signal(false);
+  conflict = signal(false);
   history = signal<Movement[]>([]);
   selected = signal<Product | null>(null);
   q = '';
@@ -35,6 +37,7 @@ export class AdminStock implements OnInit {
   async load(page = 1) {
     this.page = page;
     this.error.set('');
+    this.conflict.set(false);
     try {
       const d = await this.store.get<Page<Product>>(
         '/admin/stock?' + new URLSearchParams({ page: String(page), q: this.q, level: this.level }),
@@ -52,16 +55,23 @@ export class AdminStock implements OnInit {
     try {
       await this.store.send('PATCH', '/admin/products/' + p.id + '/stock', {
         stock: this.counts[p.id],
+        version: p.version,
         reason: this.reason || 'Ajustement manuel',
       });
+      this.conflict.set(false);
       this.notice.set('Stock mis à jour : ' + p.name);
       await this.load(this.page);
       if (this.selected()?.id === p.id) await this.movements(p);
     } catch (e) {
+      this.conflict.set(e instanceof HttpErrorResponse && e.status === 409);
       this.error.set(message(e));
     } finally {
       this.busy.set(false);
     }
+  }
+  reloadStock() {
+    if (confirm('Recharger les stocks et abandonner les quantités non enregistrées ?'))
+      void this.load(this.page);
   }
   async movements(p: Product) {
     this.selected.set(p);

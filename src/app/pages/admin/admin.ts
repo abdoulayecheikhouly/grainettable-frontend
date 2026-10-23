@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -13,6 +14,7 @@ import { AdminStock } from '../../components/admin-stock/admin-stock';
 import { Pagination } from '../../pagination';
 const blankProduct = () => ({
   id: 0,
+  version: 0,
   name: '',
   sku: '',
   description: '',
@@ -51,6 +53,7 @@ export class Admin implements OnInit {
   notice = signal('');
   busy = signal(false);
   edit = signal(false);
+  conflict = signal(false);
   product = blankProduct();
   category = blankCategory();
   q = '';
@@ -94,6 +97,7 @@ export class Admin implements OnInit {
     this.product = p
       ? {
           id: p.id,
+          version: p.version,
           name: p.name,
           sku: p.sku,
           description: p.description,
@@ -106,6 +110,7 @@ export class Admin implements OnInit {
         }
       : blankProduct();
     if (!this.product.category_id) this.product.category_id = this.categories()[0]?.id || 0;
+    this.conflict.set(false);
     this.edit.set(true);
     this.error.set('');
   }
@@ -120,15 +125,25 @@ export class Admin implements OnInit {
       this.notice.set('Produit enregistré');
       await this.load();
     } catch (e) {
+      this.conflict.set(e instanceof HttpErrorResponse && e.status === 409);
       this.error.set(message(e));
     } finally {
       this.busy.set(false);
     }
   }
+  async reloadProduct() {
+    if (!confirm('Recharger la fiche et abandonner les modifications non enregistrées ?')) return;
+    try {
+      const latest = await this.store.get<Product>('/admin/products/' + this.product.id);
+      this.editProduct(latest);
+    } catch (e) {
+      this.error.set(message(e));
+    }
+  }
   async archive(p: Product) {
     if (!confirm('Retirer « ' + p.name + ' » du catalogue public ?')) return;
     try {
-      await this.store.send('DELETE', '/admin/products/' + p.id);
+      await this.store.send('DELETE', '/admin/products/' + p.id + '?version=' + p.version);
       this.notice.set('Produit retiré du catalogue');
       await this.load();
     } catch (e) {
